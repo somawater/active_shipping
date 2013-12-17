@@ -380,10 +380,12 @@ module ActiveMerchant
             # This adds an origin event to the shipment activity in such cases.
             if origin && !(shipment_events.count == 1 && status == :delivered)
               first_event = shipment_events[0]
-              same_country = origin.country_code(:alpha2) == first_event.location.country_code(:alpha2)
-              same_or_blank_city = first_event.location.city.blank? or first_event.location.city == origin.city
+              if first_event.location
+                same_country = origin.country_code(:alpha2) == first_event.location.country_code(:alpha2)
+                same_or_blank_city = first_event.location.city.blank? or first_event.location.city == origin.city
+              end
               origin_event = ShipmentEvent.new(first_event.name, first_event.time, origin)
-              if same_country and same_or_blank_city
+              if first_event.location and same_country and same_or_blank_city
                 shipment_events[0] = origin_event
               else
                 shipment_events.unshift(origin_event)
