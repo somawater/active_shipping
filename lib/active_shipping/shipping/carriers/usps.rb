@@ -205,7 +205,7 @@ module ActiveMerchant
         xml_request = XmlNode.new('TrackRequest', 'USERID' => @options[:login]) do |root_node|
           tracking_node = XmlNode.new('TrackID', :ID => tracking_number)
           unless options[:senddate].nil?
-            tracking_node = XmlNode.new("MailingDate", options[:senddate])
+            tracking_node << XmlNode.new("MailingDate", options[:senddate])
           end
           root_node << tracking_node
         end
