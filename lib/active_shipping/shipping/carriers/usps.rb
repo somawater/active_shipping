@@ -203,7 +203,11 @@ module ActiveMerchant
 
       def build_tracking_request(tracking_number, options={})
         xml_request = XmlNode.new('TrackRequest', 'USERID' => @options[:login]) do |root_node|
-          root_node << XmlNode.new('TrackID', :ID => tracking_number)
+          tracking_node = XmlNode.new('TrackID', :ID => tracking_number)
+          unless options[:senddate].nil?
+            tracking_node = XmlNode.new("MailingDate", options[:senddate])
+          end
+          root_node << tracking_node
         end
         URI.encode(xml_request.to_s)
       end
